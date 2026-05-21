@@ -1,5 +1,11 @@
 import './style.css';
-import { getTasks } from './api.js';
+import { getTasks, createTask } from './api.js';
+
+// Ladda tasks när sidan laddas
+document.addEventListener('DOMContentLoaded', () => {
+  loadTasks();
+  setupModal();
+});
 
 async function loadTasks() {
   try {
@@ -42,5 +48,45 @@ function createTaskCard(task) {
   return card;
 }
 
-// Vänta på att HTML laddas
-document.addEventListener('DOMContentLoaded', loadTasks);
+// Modal-funktionalitet
+function setupModal() {
+  const modal = document.getElementById('task-modal');
+  const openBtn = document.getElementById('open-modal-btn');
+  const closeBtn = document.querySelector('.close-btn');
+  const cancelBtn = document.getElementById('cancel-btn');
+  const overlay = document.querySelector('.modal-overlay');
+  const form = document.getElementById('task-form');
+
+  // Öppna modal
+  openBtn.addEventListener('click', () => {
+    modal.classList.remove('hidden');
+  });
+
+  // Stäng modal
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    form.reset();
+  };
+
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  // Skicka formulär
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById('task-title').value;
+    const description = document.getElementById('task-description').value;
+    const category = document.getElementById('task-category').value;
+
+    try {
+      await createTask({ title, description, category });
+      closeModal();
+      loadTasks(); // Ladda om tasks för att visa den nya
+    } catch (error) {
+      console.error('Fel vid skapande av task:', error);
+      alert('Kunde inte skapa task. Försök igen.');
+    }
+  });
+}
