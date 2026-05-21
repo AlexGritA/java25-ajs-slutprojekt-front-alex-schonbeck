@@ -6,9 +6,23 @@
     <title>Scrum Board</title>
   </head>
   <body>
-    <div id="app">
-      <h1>Scrum Board</h1>
+  <div id="app">
+    <h1>Scrum Board</h1>
+    <div class="board">
+      <div class="column">
+        <h2>New</h2>
+        <div id="new-tasks" class="task-list"></div>
+      </div>
+      <div class="column">
+        <h2>Doing</h2>
+        <div id="doing-tasks" class="task-list"></div>
+      </div>
+      <div class="column">
+        <h2>Done</h2>
+        <div id="done-tasks" class="task-list"></div>
+      </div>
     </div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
 </html>
