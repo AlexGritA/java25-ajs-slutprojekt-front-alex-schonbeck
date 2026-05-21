@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="sv">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scrum Board</title>
-  </head>
-  <body>
+<body>
   <div id="app">
-    <h1>Scrum Board</h1>
+    <div class="header">
+      <h1>Scrum Board</h1>
+      <button id="open-modal-btn" class="add-task-btn">+</button>
+    </div>
+    
     <div class="board">
       <div class="column">
         <h2>New</h2>
@@ -23,6 +20,29 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal -->
+  <div id="task-modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <button class="close-btn">&times;</button>
+      <h2>Skapa ny task</h2>
+      <form id="task-form">
+        <input type="text" id="task-title" placeholder="Title" required />
+        <textarea id="task-description" placeholder="Description" required></textarea>
+        <select id="task-category" required>
+          <option value="">Välj kategori</option>
+          <option value="ux">UX</option>
+          <option value="frontend">Frontend</option>
+          <option value="backend">Backend</option>
+        </select>
+        <div class="modal-buttons">
+          <button type="submit" class="btn-primary">Skapa task</button>
+          <button type="button" class="btn-cancel" id="cancel-btn">Avbryt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.js"></script>
 </body>
-</html>
