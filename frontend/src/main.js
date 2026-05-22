@@ -1,5 +1,5 @@
 import './style.css';
-import { getTasks, createTask } from './api.js';
+import { getTasks, createTask, updateTask, deleteTask } from './api.js';
 
 // Ladda tasks när sidan laddas
 document.addEventListener('DOMContentLoaded', () => {
@@ -39,16 +39,72 @@ function renderTasks(tasks) {
 function createTaskCard(task) {
   const card = document.createElement('div');
   card.className = 'task-card';
+
   card.innerHTML = `
     <h3>${task.title}</h3>
     <p>${task.description}</p>
     <small>Category: ${task.category}</small>
     ${task.assignedTo ? `<p><strong>Assigned to:</strong> ${task.assignedTo}</p>` : ''}
   `;
+
+  if (task.status === 'new') {
+    addNewTaskButtons(card, task);
+  } else if (task.status === 'doing') {
+    addDoingTaskButtons(card, task);
+  } else if (task.status === 'done') {
+    addDoneTaskButtons(card, task);
+  }
+
   return card;
 }
 
-// Modal-funktionalitet
+function addNewTaskButtons(card, task) {
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'task-actions';
+  
+  const startBtn = document.createElement('button');
+  startBtn.textContent = 'Starta';
+  startBtn.className = 'btn-start';
+  startBtn.onclick = () => {
+    openAssignModal(task);
+  };
+  
+  buttonsDiv.appendChild(startBtn);
+  card.appendChild(buttonsDiv);
+}
+
+function addDoingTaskButtons(card, task) {
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'task-actions';
+  
+  const completeBtn = document.createElement('button');
+  completeBtn.textContent = 'Slutför';
+  completeBtn.className = 'btn-complete';
+  completeBtn.onclick = async () => {
+    await updateTask(task.id, { status: 'done' });
+    loadTasks();
+  };
+  
+  buttonsDiv.appendChild(completeBtn);
+  card.appendChild(buttonsDiv);
+}
+
+function addDoneTaskButtons(card, task) {
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'task-actions';
+  
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = 'Radera';
+  deleteBtn.className = 'btn-delete';
+  
+  deleteBtn.addEventListener('click', () => {
+    openDeleteModal(task);
+  });
+  
+  buttonsDiv.appendChild(deleteBtn);
+  card.appendChild(buttonsDiv);
+}
+
 function setupModal() {
   const modal = document.getElementById('task-modal');
   const openBtn = document.getElementById('open-modal-btn');
@@ -57,12 +113,10 @@ function setupModal() {
   const overlay = document.querySelector('.modal-overlay');
   const form = document.getElementById('task-form');
 
-  // Öppna modal
   openBtn.addEventListener('click', () => {
     modal.classList.remove('hidden');
   });
 
-  // Stäng modal
   const closeModal = () => {
     modal.classList.add('hidden');
     form.reset();
@@ -72,7 +126,6 @@ function setupModal() {
   cancelBtn.addEventListener('click', closeModal);
   overlay.addEventListener('click', closeModal);
 
-  // Skicka formulär
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -83,10 +136,98 @@ function setupModal() {
     try {
       await createTask({ title, description, category });
       closeModal();
-      loadTasks(); // Ladda om tasks för att visa den nya
+      loadTasks();
     } catch (error) {
       console.error('Fel vid skapande av task:', error);
       alert('Kunde inte skapa task. Försök igen.');
     }
   });
+}
+
+function openAssignModal(task) {
+  const modal = document.getElementById('assign-modal');
+  const input = document.getElementById('assign-person-input');
+  const okBtn = document.getElementById('assign-ok-btn');
+  const cancelBtn = document.getElementById('assign-cancel-btn');
+  const overlay = modal.querySelector('.modal-overlay');
+  
+  modal.classList.remove('hidden');
+  input.value = '';
+  input.focus();
+  
+  const closeModal = () => {
+    modal.classList.add('hidden');
+  };
+  
+  const handleOk = async () => {
+    const assignedTo = input.value.trim();
+    
+    if (!assignedTo) {
+      alert('Du måste ange ett namn!');
+      return;
+    }
+    
+    await updateTask(task.id, { 
+      status: 'doing', 
+      assignedTo: assignedTo 
+    });
+    closeModal();
+    loadTasks();
+  };
+  
+  okBtn.replaceWith(okBtn.cloneNode(true));
+  cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+  overlay.replaceWith(overlay.cloneNode(true));
+  
+  const newOkBtn = document.getElementById('assign-ok-btn');
+  const newCancelBtn = document.getElementById('assign-cancel-btn');
+  const newOverlay = modal.querySelector('.modal-overlay');
+  
+  newOkBtn.addEventListener('click', handleOk);
+  newCancelBtn.addEventListener('click', closeModal);
+  newOverlay.addEventListener('click', closeModal);
+  
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      handleOk();
+    }
+  });
+}
+
+function openDeleteModal(task) {
+  const modal = document.getElementById('delete-modal');
+  const confirmBtn = document.getElementById('delete-confirm-btn');
+  const cancelBtn = document.getElementById('delete-cancel-btn');
+  const overlay = modal.querySelector('.modal-overlay');
+  
+  modal.classList.remove('hidden');
+  
+  const closeModal = () => {
+    modal.classList.add('hidden');
+  };
+  
+  const handleDelete = async () => {
+    try {
+      await deleteTask(task.id);
+      closeModal();
+      loadTasks();
+    } catch (error) {
+      console.error('Fel vid radering:', error);
+      alert('Kunde inte radera task. Försök igen.');
+    }
+  };
+  
+  // Ta bort gamla listeners
+  confirmBtn.replaceWith(confirmBtn.cloneNode(true));
+  cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+  overlay.replaceWith(overlay.cloneNode(true));
+  
+  // Hämta nya referenser
+  const newConfirmBtn = document.getElementById('delete-confirm-btn');
+  const newCancelBtn = document.getElementById('delete-cancel-btn');
+  const newOverlay = modal.querySelector('.modal-overlay');
+  
+  newConfirmBtn.addEventListener('click', handleDelete);
+  newCancelBtn.addEventListener('click', closeModal);
+  newOverlay.addEventListener('click', closeModal);
 }

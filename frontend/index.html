@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="sv">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scrum Board</title>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scrum Board</title>
+</head>
+
+<body>
   <div id="app">
     <div class="header">
       <h1>Scrum Board</h1>
       <button id="open-modal-btn" class="add-task-btn">+</button>
     </div>
-    
+
     <div class="board">
       <div class="column">
         <h2>New</h2>
@@ -51,6 +53,32 @@
     </div>
   </div>
 
+  <!-- Assign person modal -->
+  <div id="assign-modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content assign-modal-content">
+      <h3>Vem ska göra denna uppgift?</h3>
+      <input type="text" id="assign-person-input" placeholder="Ange namn..." />
+      <div class="modal-buttons">
+        <button id="assign-ok-btn" class="btn-primary">OK</button>
+        <button id="assign-cancel-btn" class="btn-cancel">Avbryt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete confirm modal -->
+<div id="delete-modal" class="modal hidden">
+  <div class="modal-overlay"></div>
+  <div class="modal-content assign-modal-content">
+    <h3>Är du säker på att du vill radera denna uppgift?</h3>
+    <div class="modal-buttons">
+      <button id="delete-confirm-btn" class="btn-delete">Radera</button>
+      <button id="delete-cancel-btn" class="btn-cancel">Avbryt</button>
+    </div>
+  </div>
+</div>
+
   <script type="module" src="/src/main.js"></script>
 </body>
+
 </html>
