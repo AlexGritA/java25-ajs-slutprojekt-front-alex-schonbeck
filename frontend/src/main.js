@@ -65,26 +65,42 @@ function addNewTaskButtons(card, task) {
   const startBtn = document.createElement('button');
   startBtn.textContent = 'Starta';
   startBtn.className = 'btn-start';
-  startBtn.onclick = () => {
+  startBtn.addEventListener('click', () => {
+    console.log('Starta klickad för task ID:', task.id); // DEBUG
     openAssignModal(task);
-  };
+  });
   
   buttonsDiv.appendChild(startBtn);
   card.appendChild(buttonsDiv);
 }
 
 function addDoingTaskButtons(card, task) {
+  console.log('Skapar knappar för task ID:', task.id, 'Title:', task.title); // DEBUG
+  
   const buttonsDiv = document.createElement('div');
   buttonsDiv.className = 'task-actions';
   
+  // Ångra-knapp
+  const backBtn = document.createElement('button');
+  backBtn.textContent = 'Ångra';
+  backBtn.className = 'btn-back';
+  backBtn.addEventListener('click', async () => {
+    console.log('Ångra klickad för task ID:', task.id); // DEBUG
+    await updateTask(task.id, { status: 'new' });
+    loadTasks();
+  });
+  
+  // Slutför-knapp
   const completeBtn = document.createElement('button');
   completeBtn.textContent = 'Slutför';
   completeBtn.className = 'btn-complete';
-  completeBtn.onclick = async () => {
+  completeBtn.addEventListener('click', async () => {
+    console.log('Slutför klickad för task ID:', task.id); // DEBUG
     await updateTask(task.id, { status: 'done' });
     loadTasks();
-  };
+  });
   
+  buttonsDiv.appendChild(backBtn);
   buttonsDiv.appendChild(completeBtn);
   card.appendChild(buttonsDiv);
 }
@@ -93,14 +109,24 @@ function addDoneTaskButtons(card, task) {
   const buttonsDiv = document.createElement('div');
   buttonsDiv.className = 'task-actions';
   
+  // Ångra-knapp
+  const backBtn = document.createElement('button');
+  backBtn.textContent = 'Ångra';
+  backBtn.className = 'btn-back';
+  backBtn.addEventListener('click', async () => {
+    await updateTask(task.id, { status: 'doing' });
+    loadTasks();
+  });
+  
+  // Radera-knapp
   const deleteBtn = document.createElement('button');
   deleteBtn.textContent = 'Radera';
   deleteBtn.className = 'btn-delete';
-  
   deleteBtn.addEventListener('click', () => {
     openDeleteModal(task);
   });
   
+  buttonsDiv.appendChild(backBtn);
   buttonsDiv.appendChild(deleteBtn);
   card.appendChild(buttonsDiv);
 }
@@ -146,13 +172,25 @@ function setupModal() {
 
 function openAssignModal(task) {
   const modal = document.getElementById('assign-modal');
+  const modalContent = modal.querySelector('.modal-content');
+  
+  // Rensa hela modal-innehållet och bygg om
+  modalContent.innerHTML = `
+    <h3>Vem ska göra denna uppgift?</h3>
+    <input type="text" id="assign-person-input" placeholder="Ange namn..." />
+    <div class="modal-buttons">
+      <button id="assign-ok-btn" class="btn-primary">OK</button>
+      <button id="assign-cancel-btn" class="btn-cancel">Avbryt</button>
+    </div>
+  `;
+  
+  modal.classList.remove('hidden');
+  
   const input = document.getElementById('assign-person-input');
   const okBtn = document.getElementById('assign-ok-btn');
   const cancelBtn = document.getElementById('assign-cancel-btn');
   const overlay = modal.querySelector('.modal-overlay');
   
-  modal.classList.remove('hidden');
-  input.value = '';
   input.focus();
   
   const closeModal = () => {
@@ -167,6 +205,8 @@ function openAssignModal(task) {
       return;
     }
     
+    console.log('Startar task ID:', task.id, 'Tilldela till:', assignedTo);
+    
     await updateTask(task.id, { 
       status: 'doing', 
       assignedTo: assignedTo 
@@ -175,17 +215,9 @@ function openAssignModal(task) {
     loadTasks();
   };
   
-  okBtn.replaceWith(okBtn.cloneNode(true));
-  cancelBtn.replaceWith(cancelBtn.cloneNode(true));
-  overlay.replaceWith(overlay.cloneNode(true));
-  
-  const newOkBtn = document.getElementById('assign-ok-btn');
-  const newCancelBtn = document.getElementById('assign-cancel-btn');
-  const newOverlay = modal.querySelector('.modal-overlay');
-  
-  newOkBtn.addEventListener('click', handleOk);
-  newCancelBtn.addEventListener('click', closeModal);
-  newOverlay.addEventListener('click', closeModal);
+  okBtn.addEventListener('click', handleOk);
+  cancelBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
   
   input.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
