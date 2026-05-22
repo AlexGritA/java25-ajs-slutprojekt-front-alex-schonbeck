@@ -311,3 +311,10 @@ h1 {
   font-size: 14px;
   margin-bottom: 15px;
 }
+
+.timestamp {
+  display: block;
+  margin-top: 4px;
+  color: #999;
+  font-size: 11px;
+}

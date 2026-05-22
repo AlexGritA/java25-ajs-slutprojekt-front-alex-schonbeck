@@ -40,10 +40,15 @@ function createTaskCard(task) {
   const card = document.createElement('div');
   card.className = 'task-card';
 
+  // Formatera timestamp till läsbart format
+  const date = new Date(task.timestamp);
+  const formattedDate = date.toLocaleDateString('sv-SE') + ' ' + date.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+
   card.innerHTML = `
     <h3>${task.title}</h3>
     <p>${task.description}</p>
     <small>Category: ${task.category}</small>
+    <small class="timestamp">Created: ${formattedDate}</small>
     ${task.assignedTo ? `<p><strong>Assigned to:</strong> ${task.assignedTo}</p>` : ''}
   `;
 
