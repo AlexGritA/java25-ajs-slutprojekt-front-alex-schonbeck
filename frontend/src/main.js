@@ -66,7 +66,6 @@ function addNewTaskButtons(card, task) {
   startBtn.textContent = 'Starta';
   startBtn.className = 'btn-start';
   startBtn.addEventListener('click', () => {
-    console.log('Starta klickad för task ID:', task.id); // DEBUG
     openAssignModal(task);
   });
   
@@ -75,7 +74,6 @@ function addNewTaskButtons(card, task) {
 }
 
 function addDoingTaskButtons(card, task) {
-  console.log('Skapar knappar för task ID:', task.id, 'Title:', task.title); // DEBUG
   
   const buttonsDiv = document.createElement('div');
   buttonsDiv.className = 'task-actions';
@@ -85,7 +83,6 @@ function addDoingTaskButtons(card, task) {
   backBtn.textContent = 'Ångra';
   backBtn.className = 'btn-back';
   backBtn.addEventListener('click', async () => {
-    console.log('Ångra klickad för task ID:', task.id); // DEBUG
     await updateTask(task.id, { status: 'new' });
     loadTasks();
   });
@@ -95,7 +92,6 @@ function addDoingTaskButtons(card, task) {
   completeBtn.textContent = 'Slutför';
   completeBtn.className = 'btn-complete';
   completeBtn.addEventListener('click', async () => {
-    console.log('Slutför klickad för task ID:', task.id); // DEBUG
     await updateTask(task.id, { status: 'done' });
     loadTasks();
   });
@@ -204,8 +200,6 @@ function openAssignModal(task) {
       alert('Du måste ange ett namn!');
       return;
     }
-    
-    console.log('Startar task ID:', task.id, 'Tilldela till:', assignedTo);
     
     await updateTask(task.id, { 
       status: 'doing', 
