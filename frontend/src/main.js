@@ -17,12 +17,10 @@ async function loadTasks() {
 }
 
 function renderTasks(tasks) {
-  // Rensa kolumnerna först
   document.getElementById('new-tasks').innerHTML = '';
   document.getElementById('doing-tasks').innerHTML = '';
   document.getElementById('done-tasks').innerHTML = '';
 
-  // Sortera tasks i rätt kolumn
   tasks.forEach(task => {
     const taskCard = createTaskCard(task);
     
@@ -40,7 +38,6 @@ function createTaskCard(task) {
   const card = document.createElement('div');
   card.className = 'task-card';
 
-  // Formatera timestamp till läsbart format
   const date = new Date(task.timestamp);
   const formattedDate = date.toLocaleDateString('sv-SE') + ' ' + date.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
 
@@ -83,7 +80,6 @@ function addDoingTaskButtons(card, task) {
   const buttonsDiv = document.createElement('div');
   buttonsDiv.className = 'task-actions';
   
-  // Ångra-knapp
   const backBtn = document.createElement('button');
   backBtn.textContent = 'Ångra';
   backBtn.className = 'btn-back';
@@ -92,7 +88,6 @@ function addDoingTaskButtons(card, task) {
     loadTasks();
   });
   
-  // Slutför-knapp
   const completeBtn = document.createElement('button');
   completeBtn.textContent = 'Slutför';
   completeBtn.className = 'btn-complete';
@@ -110,7 +105,6 @@ function addDoneTaskButtons(card, task) {
   const buttonsDiv = document.createElement('div');
   buttonsDiv.className = 'task-actions';
   
-  // Ångra-knapp
   const backBtn = document.createElement('button');
   backBtn.textContent = 'Ångra';
   backBtn.className = 'btn-back';
@@ -119,7 +113,6 @@ function addDoneTaskButtons(card, task) {
     loadTasks();
   });
   
-  // Radera-knapp
   const deleteBtn = document.createElement('button');
   deleteBtn.textContent = 'Radera';
   deleteBtn.className = 'btn-delete';
