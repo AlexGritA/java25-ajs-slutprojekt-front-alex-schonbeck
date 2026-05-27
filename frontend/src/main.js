@@ -220,11 +220,21 @@ function openAssignModal(task) {
 
 function openDeleteModal(task) {
   const modal = document.getElementById('delete-modal');
+  const modalContent = modal.querySelector('.modal-content');
+  
+  modalContent.innerHTML = `
+    <h3>Är du säker på att du vill radera denna uppgift?</h3>
+    <div class="modal-buttons">
+      <button id="delete-confirm-btn" class="btn-delete">Radera</button>
+      <button id="delete-cancel-btn" class="btn-cancel">Avbryt</button>
+    </div>
+  `;
+  
+  modal.classList.remove('hidden');
+  
   const confirmBtn = document.getElementById('delete-confirm-btn');
   const cancelBtn = document.getElementById('delete-cancel-btn');
   const overlay = modal.querySelector('.modal-overlay');
-  
-  modal.classList.remove('hidden');
   
   const closeModal = () => {
     modal.classList.add('hidden');
@@ -241,17 +251,7 @@ function openDeleteModal(task) {
     }
   };
   
-  // Ta bort gamla listeners
-  confirmBtn.replaceWith(confirmBtn.cloneNode(true));
-  cancelBtn.replaceWith(cancelBtn.cloneNode(true));
-  overlay.replaceWith(overlay.cloneNode(true));
-  
-  // Hämta nya referenser
-  const newConfirmBtn = document.getElementById('delete-confirm-btn');
-  const newCancelBtn = document.getElementById('delete-cancel-btn');
-  const newOverlay = modal.querySelector('.modal-overlay');
-  
-  newConfirmBtn.addEventListener('click', handleDelete);
-  newCancelBtn.addEventListener('click', closeModal);
-  newOverlay.addEventListener('click', closeModal);
+  confirmBtn.addEventListener('click', handleDelete);
+  cancelBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
 }

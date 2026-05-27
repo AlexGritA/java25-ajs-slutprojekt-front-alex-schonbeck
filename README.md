@@ -96,12 +96,12 @@ project/
 
 ## Funktioner
 
-- ✅ Skapa nya tasks med titel, beskrivning och kategori
-- ✅ Tre kolumner: New, Doing, Done
-- ✅ Flytta tasks mellan kolumner
-- ✅ Tilldela tasks till personer
-- ✅ Radera slutförda tasks
-- ✅ Timestamp för varje task
+- Skapa nya tasks med titel, beskrivning och kategori
+- Tre kolumner: New, Doing, Done
+- Flytta tasks mellan kolumner
+- Tilldela tasks till personer
+- Radera slutförda tasks
+- Timestamp för varje task
 
 ## API Endpoints
 

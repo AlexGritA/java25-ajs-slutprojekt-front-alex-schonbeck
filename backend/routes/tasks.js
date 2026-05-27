@@ -3,7 +3,7 @@ const db = require('../db');
 
 const router = express.Router();
 
-// GET alla tasks
+// GET 
 router.get('/', (req, res) => {
   db.all('SELECT * FROM tasks', [], (err, rows) => {
     if (err) {
@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
   });
 });
 
-// POST ny task
+// POST
 router.post('/', (req, res) => {
   const { title, description, category } = req.body;
   const status = 'new';
@@ -33,7 +33,7 @@ router.post('/', (req, res) => {
   });
 });
 
-// PATCH uppdatera task
+// PATCH 
 router.patch('/:id', (req, res) => {
   const { id } = req.params;
   const { status, assignedTo } = req.body;
@@ -49,7 +49,7 @@ router.patch('/:id', (req, res) => {
   });
 });
 
-// DELETE ta bort task
+// DELETE
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
