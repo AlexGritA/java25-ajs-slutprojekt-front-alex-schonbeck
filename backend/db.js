@@ -22,7 +22,6 @@ db.run(`
 
 module.exports = db;
 
-// Seed-data
 function seedDatabase() {
   const tasks = [
     { title: 'Designa login-sida', description: 'Skapa UI för inloggning', category: 'ux', status: 'new', assignedTo: undefined, timestamp: new Date().toISOString() },
