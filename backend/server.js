@@ -13,6 +13,17 @@ app.use(express.json());
 app.use('/tasks', require('./routes/tasks'));
 
 // Start server
+// 404 - Route finns inte
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint finns inte' });
+});
+
+// Global error handler - fångar oväntade fel
+app.use((err, req, res, next) => {
+  console.error('Serverfel:', err.message);
+  res.status(500).json({ error: 'Något gick fel på servern' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server körs på http://localhost:${PORT}`);
 });

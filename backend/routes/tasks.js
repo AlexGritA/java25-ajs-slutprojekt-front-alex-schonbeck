@@ -32,8 +32,8 @@ router.post('/',
 
     const sql = `INSERT INTO tasks (title, description, category, status, assignedTo, timestamp) 
                  VALUES (?, ?, ?, ?, ?, ?)`;
-    
-    db.run(sql, [title, description, category, status, assignedTo, timestamp], function(err) {
+
+    db.run(sql, [title, description, category, status, assignedTo, timestamp], function (err) {
       if (err) {
         res.status(500).json({ error: err.message });
         return;
@@ -58,11 +58,14 @@ router.patch('/:id',
     const { status, assignedTo } = req.body;
 
     const sql = `UPDATE tasks SET status = ?, assignedTo = ? WHERE id = ?`;
-    
-    db.run(sql, [status, assignedTo, id], function(err) {
+
+    db.run(sql, [status, assignedTo, id], function (err) {
       if (err) {
         res.status(500).json({ error: err.message });
         return;
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ error: 'Task hittades inte' });
       }
       res.json({ message: 'Task uppdaterad', id });
     });
@@ -73,11 +76,14 @@ router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
   const sql = `DELETE FROM tasks WHERE id = ?`;
-  
-  db.run(sql, [id], function(err) {
+
+  db.run(sql, [id], function (err) {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: 'Task hittades inte' });
     }
     res.json({ message: 'Task raderad', id });
   });
